@@ -1,4 +1,4 @@
-package uz.aim.zerikdim5.configs.security;
+package uz.aim.zerikdim5.configs.security.filter;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

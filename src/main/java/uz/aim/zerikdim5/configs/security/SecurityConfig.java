@@ -5,14 +5,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import uz.aim.zerikdim5.configs.security.filter.JwtFilter;
 import uz.aim.zerikdim5.services.auth.AuthService;
+import uz.aim.zerikdim5.services.oauth2.OAuth2UserService;
 
 @Configuration
 @EnableWebSecurity
@@ -24,6 +25,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     AuthService authService;
     @Autowired
     JwtFilter jwtFilter;
+    @Autowired
+    OAuth2UserService oAuth2UserService;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -37,7 +40,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .oauth2Login()
+                .userInfoEndpoint()
+                .userService(oAuth2UserService);
     }
 
     @Override
